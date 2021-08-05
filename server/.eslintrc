@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "standard"
+  ],
+  "plugins": ["@typescript-eslint/eslint-plugin"],
+  "env": {
+    "es6": true,
+    "browser": true,
+    "jest": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-inferrable-types": 0,
+    "object-curly-spacing": ["error", "always"],
+    "no-console": 0,
+    "object-shorthand": ["error"],
+    "quote-props": ["error", "as-needed"],
+    "import/first": 0
+  },
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "rules": {
+        "no-unused-vars": ["off"],
+        "no-undef": ["off"]
+      }
+    }
+  ]
+}
