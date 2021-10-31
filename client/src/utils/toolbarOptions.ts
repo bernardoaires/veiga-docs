@@ -7,5 +7,5 @@ export const toolbarOptions = [
   [{ script: 'sub' }, { script: 'super' }],
   [{ align: [] }],
   ['image', 'blockquote', 'code-block'],
-  ['clean'],
+  ['clean']
 ]

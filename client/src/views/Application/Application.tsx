@@ -1,15 +1,17 @@
 import { TextEditor } from '~/components'
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
-import { v4 as uuidV4 } from 'uuid'
+import { BrowserRouter, Switch, Route, useRouteMatch } from 'react-router-dom'
+import { Documents } from './views'
 
 export const Application: React.FC = () => {
+  const match = useRouteMatch()
+
   return (
     <BrowserRouter>
       <Switch>
-        <Route path='/' exact>
-          <Redirect to={`/documents/${uuidV4()}`} />
+        <Route path={`${match.url}/`} exact>
+          <Documents />
         </Route>
-        <Route path='/documents/:documentId' exact>
+        <Route path={`${match.url}/documents/:documentId`} exact>
           <TextEditor />
         </Route>
       </Switch>

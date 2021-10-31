@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 import { io, Socket } from 'socket.io-client'
 import { toolbarOptions } from '~/utils'
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
+import { AuthContext } from '~/App'
+import { Box, IconButton, Typography } from '@material-ui/core'
+import { Description } from '@material-ui/icons'
+import { globalTheme } from '~/utils/theme'
 
 interface UrlParams {
   documentId: string
@@ -14,9 +18,12 @@ export const TextEditor: React.FC = () => {
   const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
   const [quill, setQuill] = useState<Quill>()
   const { documentId } = useParams<UrlParams>()
+  const history = useHistory()
+  const authAccount = useContext(AuthContext)
+  const { _id } = authAccount!
 
   useEffect(() => {
-    const socketServer = io('http://localhost:3001')
+    const socketServer = io('http://localhost:8001')
     setSocket(socketServer)
 
     return () => {
@@ -32,8 +39,8 @@ export const TextEditor: React.FC = () => {
       quill.enable()
     })
 
-    socket.emit('get-document', documentId)
-  }, [socket, quill, documentId])
+    socket.emit('get-document', documentId, _id)
+  }, [socket, quill, documentId, _id])
 
   useEffect(() => {
     if (!socket || !quill) return
@@ -91,7 +98,22 @@ export const TextEditor: React.FC = () => {
     setQuill(quillInstance)
   }, [])
 
+  const handleClick = () => {
+    history.push('/app')
+  }
+
   return  (
-    <div className='container' ref={wrapperRef}></div>
+    <>
+      <Box sx={{
+        backgroundColor: globalTheme.palette.primary.main,
+        display: 'flex',
+        alignItems: 'center',
+        color: globalTheme.palette.common.white
+      }}>
+        <IconButton onClick={handleClick}><Description /></IconButton>
+        <Typography variant='h6'>Página inicial</Typography>
+      </Box>
+      <div className='container' ref={wrapperRef}></div>
+    </>
   )
 }

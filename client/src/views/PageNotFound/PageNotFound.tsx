@@ -1,5 +1,9 @@
+import { Layout } from '~/components'
+
 export const PageNotFound: React.FC = () => {
   return (
-    <h1>Página não encontrada</h1>
+    <Layout>
+      <h1>Página não encontrada</h1>
+    </Layout>
   )
 }

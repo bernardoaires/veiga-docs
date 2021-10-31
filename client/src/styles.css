@@ -7,13 +7,26 @@ body {
   margin: 0;
 }
 
-.container .ql-editor {
-  width: 8.5in;
-  min-height: 11in;
-  padding: 1in;
-  margin: 1rem;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
-  background-color: white;
+@media only screen and (max-width: 600px) {
+  .container .ql-editor {
+    width: 8.5in;
+    min-height: 11in;
+    padding-top: 0.5in;
+    margin: 1rem;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    background-color: white;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  .container .ql-editor {
+    width: 8.5in;
+    min-height: 11in;
+    padding: 1in;
+    margin: 1rem;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
+    background-color: white;
+  }
 }
 
 .container .ql-container.ql-snow {

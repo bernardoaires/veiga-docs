@@ -1,1 +1,6 @@
 export * from './TextEditor'
+export * from './Illustration'
+export * from './Layout'
+export * from './TitledCard'
+export * from './HfField'
+export * from './DocumentCard'
