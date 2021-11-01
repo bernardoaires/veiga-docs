@@ -15,13 +15,17 @@ export const getDb = async () => {
 export interface DocumentData extends DocumentType {
   _id: string,
   userId: string,
-  data: Object
+  data: Object,
+  createdAt: Date,
+  updatedAt: Date
 }
 
 export const Document = new Schema({
   _id: String,
   userId: String,
-  data: Object
+  data: Object,
+  createdAt: Date,
+  updatedAt: Date
 }, { versionKey: false })
 
 export const documentModel = model<DocumentData>('Document', Document, 'Document')
