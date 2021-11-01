@@ -27,7 +27,6 @@ export const Layout: React.FC = (props) => {
 
   const handleClick = () => {
     signOut()
-    window.location.reload()
   }
 
   return (

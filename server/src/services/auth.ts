@@ -5,11 +5,11 @@ import morgan from 'morgan'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import { json } from 'body-parser'
-import { Login, Register } from './types'
+import { Login, Register, GetDocumentsByUserId } from './types'
 import { getDb } from './database'
 import { v4 as uuidV4 } from 'uuid'
 import { validateSchema } from '../utils/validateSchema'
-import { loginSchema, registerSchema } from './schema'
+import { getDocumentsByUserIdSchema, loginSchema, registerSchema } from './schema'
 
 const app = express()
 const port = 8000
@@ -114,8 +114,14 @@ app.post('/login', async (req, res) => {
     res.status(400).send(errors)
     return
   }
-
+  
   const authAccount = await db.collection('Account').findOne({ username })
+
+  if (!authAccount) {
+    res.status(404).send('Account not found')
+    return
+  }
+
   try {
     if (!await bcrypt.compare(password, authAccount.password)) {
       res.status(404).send('Failed login')
@@ -125,14 +131,33 @@ app.post('/login', async (req, res) => {
     res.sendStatus(500)
     return
   }
-  if (!authAccount) {
-    res.status(404).send('Account not found')
-    return
-  }
+
   const token = jwt.sign({
     userId: authAccount._id
   }, process.env.JWT_KEY!)
   res.send({ token })
+})
+
+app.post('/documents', async (req, res) => {
+  const { userId } = req.body as GetDocumentsByUserId
+  const db = await getDb()
+
+  const errors = validateSchema(getDocumentsByUserIdSchema, req.body)
+
+  if (errors) {
+    res.status(400).send(errors)
+    return
+  }
+
+  try {
+    const result = await db.collection('Document').find({
+      userId
+    }).sort({ updatedAt: -1 }).toArray()
+  
+    res.send(result)
+  } catch {
+    res.sendStatus(500)
+  }
 })
 
 app.listen(port, () => {

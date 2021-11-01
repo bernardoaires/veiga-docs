@@ -33,7 +33,10 @@ io.on('connection', socket => {
     })
 
     socket.on('save-document', async data => {
-      await documentModel.findByIdAndUpdate(documentId, { data })
+      await documentModel.findByIdAndUpdate(documentId, { 
+        data,
+        updatedAt: new Date()
+      })
     })
   })
   console.log('Socket connected.')
@@ -53,6 +56,8 @@ const findOrCreateDocument = async (documentId: string, userId: string) => {
   return await documentModel.create({
     _id: documentId,
     userId,
-    data: defaultValue
+    data: defaultValue,
+    updatedAt: new Date(),
+    createdAt: new Date()
   })
 }

@@ -4,6 +4,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { HfField, Layout, TitledCard } from '~/components'
 import { useHistory } from 'react-router'
 import { signIn } from '~/service/auth'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { loginSchema } from '~/utils/yupSchema'
+import { useSnackbar } from 'notistack-v5'
 
 const useStyles = makeStyles({
   form: {
@@ -22,13 +25,25 @@ export interface LoginFormValues {
 export const Login: React.FC = () => {
   const classes = useStyles()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
 
-  const { control, handleSubmit } = useForm<LoginFormValues>()
+  const { control, handleSubmit, formState } = useForm<LoginFormValues>({
+    resolver: yupResolver(loginSchema)
+  })
+
+  const { errors } = formState
 
   const onSubmit: SubmitHandler<LoginFormValues> = useCallback(async (data) => {
-    await signIn(data)
-    window.location.reload()
-  }, [])
+    const result = await signIn(data)
+    if (result.ok) {
+      window.location.reload()
+      return
+    }
+    enqueueSnackbar('Erro ao logar.', {
+      variant: 'error',
+      anchorOrigin: { horizontal: 'center', vertical: 'bottom' }
+    })
+  }, [enqueueSnackbar])
 
   const handleNavigation = () => {
     history.push('/register')
@@ -43,6 +58,7 @@ export const Login: React.FC = () => {
             control={control}
             name='username'
             label='Usuário'
+            errorMessage={errors.username?.message}
           />
           <HfField 
             component={TextField}
@@ -50,6 +66,7 @@ export const Login: React.FC = () => {
             name='password'
             label='Senha'
             type='password'
+            errorMessage={errors.password?.message}
           />
           <Button variant='text' onClick={handleNavigation}>Registrar conta</Button>
           <Button variant='contained' type='submit'>Logar</Button>

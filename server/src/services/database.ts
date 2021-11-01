@@ -22,6 +22,6 @@ export const Document = new Schema({
   _id: String,
   userId: String,
   data: Object
-})
+}, { versionKey: false })
 
 export const documentModel = model<DocumentData>('Document', Document, 'Document')

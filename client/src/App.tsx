@@ -21,8 +21,8 @@ export const App: React.FC = () => {
   useEffect(() => {
     (async () => {
       setLoading(true)
-      const response = await getMe()
-      setAuthAccount(response?.data)
+      const result = await getMe()
+      setAuthAccount(result.data)
       setLoading(false)
     })()
   }, [])
