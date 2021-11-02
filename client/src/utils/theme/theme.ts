@@ -41,12 +41,6 @@ declare module '@material-ui/core/styles/createPalette' {
 
 declare module '@material-ui/core/styles/createTheme' {
   interface Theme {
-    sidebar: {
-      minimizedWidthSmDown: number,
-      minimizedWidthSmUp: number,
-      expandedWidth: number,
-      backgroundColor: string
-    },
     topbar: {
       height: number,
       backgroundColor: string
@@ -198,14 +192,7 @@ export const globalTheme = createTheme({
       A700: '#A7ADB2'
     }
   },
-  sidebar: {
-    expandedWidth: 290,
-    minimizedWidthSmUp: 95,
-    minimizedWidthSmDown: 75,
-    backgroundColor: '#272976'
-  },
   topbar: {
-    backgroundColor: '#ffffff',
     height: 75
   },
   shape: {

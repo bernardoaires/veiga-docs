@@ -5,10 +5,12 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import { v4 as uuidV4 } from 'uuid'
 import { AuthContext } from '~/App'
 import { getDocumentsByUserId } from '~/service/api'
+import { Box } from '@material-ui/core'
 
 interface DocumentToFront {
   _id: string,
   userId: string,
+  title: string,
   data: any
 }
 
@@ -37,7 +39,7 @@ export const Documents: React.FC = () => {
     return (
       <Layout>
         <DocumentCard title='Novo Documento' onClick={() => handleClick()}>
-          <NewDoc height={200} width={200} />
+          <NewDoc height='100%' width='100%' />
         </DocumentCard>
       </Layout>
     )
@@ -45,16 +47,18 @@ export const Documents: React.FC = () => {
 
   return (
     <Layout>
-      <DocumentCard title='Novo Documento' onClick={() => handleClick()}>
-        <NewDoc height={200} width={200} />
-      </DocumentCard>
-      {documents.map((document, index) => {
-        return (
-          <DocumentCard key={index} title={`Documento ${index}`} onClick={() => handleClick(document._id)}>
-            <NewDoc height={200} width={200} />
-          </DocumentCard>
-        )
-      })}
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <DocumentCard title='Novo Documento' onClick={() => handleClick()}>
+          <NewDoc height='100%' width='100%' />
+        </DocumentCard>
+        {documents.map((document, index) => {
+          return (
+            <DocumentCard key={index} title={document.title ? document.title : `Documento ${index}`} onClick={() => handleClick(document._id)}>
+              <NewDoc height='100%' width='100%' />
+            </DocumentCard>
+          )
+        })}
+      </Box>
     </Layout>
   )
 }

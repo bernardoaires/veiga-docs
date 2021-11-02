@@ -1,8 +1,7 @@
-import { AppBar, Box, Button, makeStyles, Typography } from '@material-ui/core'
-import { useContext } from 'react'
-import { AuthContext } from '~/App'
+import { AppBar, Box, makeStyles, Typography, useMediaQuery } from '@material-ui/core'
 import { Docs } from '~/assets/svg'
-import { signOut } from '~/service/auth'
+import { globalTheme } from '~/utils/theme'
+import { LogoutButton } from '~/components'
 
 const useStyles = makeStyles({
   root: {
@@ -23,31 +22,25 @@ const useStyles = makeStyles({
 export const Layout: React.FC = (props) => {
   const { children } = props
   const classes = useStyles()
-  const authAccount = useContext(AuthContext)
-
-  const handleClick = () => {
-    signOut()
-  }
+  const matches = useMediaQuery('(min-width:600px)')
 
   return (
     <Box className={classes.root}>
-      <AppBar>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box />
+      <AppBar sx={{ height: globalTheme.topbar.height }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: `${!matches ? '15px' : '0px'}` }}>
+          <Box sx={{ marginLeft: 2 }} />
           <Box className={classes.appbar}>
-            <Docs height={80} width={80} />
+            {matches ? <Docs height={75} width={75} /> : null}
             <Typography variant='h3'>Veiga Docs</Typography>
           </Box>
-          <Box sx={{ marginTop: 2, marginRight: 2 }} >
-            {authAccount ? (
-              <Button onClick={handleClick} color='inherit' variant='outlined'>
-              Logout
-              </Button>
-            ) : null}
-          </Box>
+          <LogoutButton />
         </Box>
       </AppBar>
-      {children}
+      <Box sx={{ margin: 'auto' }}>
+        <Box sx={{ marginTop: '75px' }}>
+          {children}
+        </Box>
+      </Box>
     </Box>
   )
 }

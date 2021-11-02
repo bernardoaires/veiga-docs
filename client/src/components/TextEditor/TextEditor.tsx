@@ -6,9 +6,10 @@ import { toolbarOptions } from '~/utils'
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
 import { useHistory, useParams } from 'react-router-dom'
 import { AuthContext } from '~/App'
-import { Box, IconButton, Typography } from '@material-ui/core'
+import { Box, IconButton, Paper, TextField, Typography, useMediaQuery } from '@material-ui/core'
 import { Description } from '@material-ui/icons'
 import { globalTheme } from '~/utils/theme'
+import { LogoutButton } from '..'
 
 interface UrlParams {
   documentId: string
@@ -17,9 +18,11 @@ interface UrlParams {
 export const TextEditor: React.FC = () => {
   const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
   const [quill, setQuill] = useState<Quill>()
+  const [title, setTitle] = useState<string>('')
   const { documentId } = useParams<UrlParams>()
   const history = useHistory()
   const authAccount = useContext(AuthContext)
+  const matches = useMediaQuery('(min-width:600px)')
   const { _id } = authAccount!
 
   useEffect(() => {
@@ -34,6 +37,10 @@ export const TextEditor: React.FC = () => {
   useEffect(() => {
     if (!socket || !quill) return
 
+    socket.once('get-title', title => {
+      setTitle(title)
+    })
+
     socket.once('load-document', document => {
       quill.setContents(document)
       quill.enable()
@@ -46,13 +53,13 @@ export const TextEditor: React.FC = () => {
     if (!socket || !quill) return
 
     const interval = setInterval(() => {
-      socket.emit('save-document', quill.getContents())
+      socket.emit('save-document', quill.getContents(), title)
     }, 2000)
 
     return () => {
       clearInterval(interval)
     }
-  }, [socket, quill])
+  }, [socket, quill, title])
 
   useEffect(() => {
     if (!socket || !quill) return
@@ -102,17 +109,31 @@ export const TextEditor: React.FC = () => {
     history.push('/app')
   }
 
-  //TODO: Adicionar incerção de titulo do documento
   return  (
     <>
       <Box sx={{
         backgroundColor: globalTheme.palette.primary.main,
         display: 'flex',
         alignItems: 'center',
-        color: globalTheme.palette.common.white
+        justifyContent: 'space-between',
+        color: globalTheme.palette.common.white,
+        width: '100vw',
+        position: 'fixed',
+        zIndex: 1
       }}>
-        <IconButton onClick={handleClick}><Description /></IconButton>
-        <Typography variant='h6'>Página inicial</Typography>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <IconButton onClick={handleClick}><Description sx={{ color: 'white' }} /></IconButton>
+          {matches ? (
+            <Typography onClick={handleClick} variant='h6' sx={{ cursor: 'pointer' }}>Página inicial</Typography>
+          ) : null}
+        </Box>
+        <Paper>
+          <TextField size='small' value={title} onChange={(event) => setTitle(event.target.value)} />
+        </Paper>
+        <LogoutButton />
       </Box>
       <div className='container' ref={wrapperRef}></div>
     </>

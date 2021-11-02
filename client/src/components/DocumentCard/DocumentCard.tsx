@@ -10,7 +10,7 @@ export const DocumentCard: React.FC<DocumentCardProps> = (props) => {
   const { title, children, onClick } = props
 
   return (
-    <Card sx={{ margin: globalTheme.spacing(2), cursor: 'pointer' }} onClick={onClick}>
+    <Card sx={{ margin: globalTheme.spacing(2), cursor: 'pointer' }} elevation={5} onClick={onClick}>
       <CardHeader title={title} />
       <CardContent>
         {children}

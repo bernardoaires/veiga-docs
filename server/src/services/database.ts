@@ -15,6 +15,7 @@ export const getDb = async () => {
 export interface DocumentData extends DocumentType {
   _id: string,
   userId: string,
+  title: string,
   data: Object,
   createdAt: Date,
   updatedAt: Date
@@ -23,6 +24,7 @@ export interface DocumentData extends DocumentType {
 export const Document = new Schema({
   _id: String,
   userId: String,
+  title: String,
   data: Object,
   createdAt: Date,
   updatedAt: Date

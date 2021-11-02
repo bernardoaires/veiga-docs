@@ -26,15 +26,17 @@ io.on('connection', socket => {
     const document = await findOrCreateDocument(documentId, userId)
     socket.join(documentId)
     socket.emit('load-document', document.data)
+    socket.emit('get-title', document.title)
 
     socket.on('send-changes', delta => {
       socket.broadcast.to(documentId).emit('receive-changes', delta)
       console.log(delta)
     })
 
-    socket.on('save-document', async data => {
+    socket.on('save-document', async (data, title) => {
       await documentModel.findByIdAndUpdate(documentId, { 
         data,
+        title,
         updatedAt: new Date()
       })
     })
@@ -57,6 +59,7 @@ const findOrCreateDocument = async (documentId: string, userId: string) => {
     _id: documentId,
     userId,
     data: defaultValue,
+    title: '',
     updatedAt: new Date(),
     createdAt: new Date()
   })

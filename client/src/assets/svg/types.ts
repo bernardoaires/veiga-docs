@@ -1,4 +1,4 @@
 export interface IllustrationProps {
-  width?: number
-  height?: number
+  width?: number | string
+  height?: number | string
 }
