@@ -33,10 +33,11 @@ io.on('connection', socket => {
       console.log(delta)
     })
 
-    socket.on('save-document', async (data, title) => {
+    socket.on('save-document', async (data, title, image) => {
       await documentModel.findByIdAndUpdate(documentId, { 
         data,
         title,
+        image,
         updatedAt: new Date()
       })
     })
@@ -60,6 +61,7 @@ const findOrCreateDocument = async (documentId: string, userId: string) => {
     userId,
     data: defaultValue,
     title: '',
+    image: '',
     updatedAt: new Date(),
     createdAt: new Date()
   })

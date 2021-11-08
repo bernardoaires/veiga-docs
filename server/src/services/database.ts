@@ -16,6 +16,7 @@ export interface DocumentData extends DocumentType {
   _id: string,
   userId: string,
   title: string,
+  image: string,
   data: Object,
   createdAt: Date,
   updatedAt: Date
@@ -25,6 +26,7 @@ export const Document = new Schema({
   _id: String,
   userId: String,
   title: String,
+  image: String,
   data: Object,
   createdAt: Date,
   updatedAt: Date

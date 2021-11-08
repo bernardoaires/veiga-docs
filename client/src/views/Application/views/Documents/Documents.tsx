@@ -11,6 +11,7 @@ interface DocumentToFront {
   _id: string,
   userId: string,
   title: string,
+  image: string,
   data: any
 }
 
@@ -54,7 +55,18 @@ export const Documents: React.FC = () => {
         {documents.map((document, index) => {
           return (
             <DocumentCard key={index} title={document.title ? document.title : `Documento ${index}`} onClick={() => handleClick(document._id)}>
-              <NewDoc height='100%' width='100%' />
+              {!document.image.length ? (
+                <NewDoc height='100%' width='100%' />
+              ) : (
+                <img
+                  src={document.image}
+                  alt={`Documento ${index}`}
+                  style={{
+                    height: '300px',
+                    width: '300px'
+                  }} 
+                />
+              )}
             </DocumentCard>
           )
         })}

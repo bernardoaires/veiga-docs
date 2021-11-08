@@ -10,6 +10,7 @@ import { Box, IconButton, Paper, TextField, Typography, useMediaQuery } from '@m
 import { Description } from '@material-ui/icons'
 import { globalTheme } from '~/utils/theme'
 import { LogoutButton } from '..'
+import { useScreenshot } from '~/hooks'
 
 interface UrlParams {
   documentId: string
@@ -24,6 +25,8 @@ export const TextEditor: React.FC = () => {
   const authAccount = useContext(AuthContext)
   const matches = useMediaQuery('(min-width:600px)')
   const { _id } = authAccount!
+  const { takeScreenshot, image } = useScreenshot()
+  const editor = document.getElementsByClassName('ql-editor')[0]
 
   useEffect(() => {
     const socketServer = io('http://localhost:8001')
@@ -52,15 +55,20 @@ export const TextEditor: React.FC = () => {
   useEffect(() => {
     if (!socket || !quill) return
 
-    const interval = setInterval(() => {
-      socket.emit('save-document', quill.getContents(), title)
-    }, 2000)
+    const interval = setInterval(async () => {
+      await takeScreenshot(undefined, { 
+        height: editor ? editor.clientWidth : 816,
+        style: { margin: 'auto', overflow: 'hidden' }
+      })
 
+      socket.emit('save-document', quill.getContents(), title, image)
+    }, 2000)
+    
     return () => {
       clearInterval(interval)
     }
-  }, [socket, quill, title])
-
+  }, [socket, quill, title, takeScreenshot, image, editor])
+  
   useEffect(() => {
     if (!socket || !quill) return
 
