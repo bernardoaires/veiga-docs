@@ -63,6 +63,7 @@ const findOrCreateDocument = async (documentId: string, userId: string) => {
     title: '',
     image: '',
     updatedAt: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
+    deletedAt: null
   })
 }

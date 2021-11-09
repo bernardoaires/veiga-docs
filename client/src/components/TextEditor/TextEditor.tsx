@@ -61,7 +61,7 @@ export const TextEditor: React.FC = () => {
         style: { margin: 'auto', overflow: 'hidden' }
       })
 
-      socket.emit('save-document', quill.getContents(), title, image)
+      socket.emit('save-document', quill.getContents(), title, image || '')
     }, 2000)
     
     return () => {

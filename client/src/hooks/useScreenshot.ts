@@ -19,6 +19,7 @@ export const useScreenshot = (options?: UseScreenshotProps) => {
       let tempImage: string | undefined
 
       try {
+        // Gerando erro de tipagem, pois Element do getElementsByClassName não é o mesmo que HtmlElement do getElementById
         const body = document.getElementsByClassName('ql-editor')[0]!
 
         if (type === 'jpg') {

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart": "concurrently \"nodemon ./src/services/auth.ts\" \"nodemon ./src/services/api.ts\"",
+    "devStart": "concurrently \"nodemon ./src/services/auth.ts\" \"nodemon ./src/services/api.ts\" \"nodemon ./src/services/documents.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

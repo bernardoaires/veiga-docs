@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { NewDoc } from '~/assets/svg'
-import { DocumentCard, Layout } from '~/components'
+import { DocumentCard, Layout, ActionDialog } from '~/components'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { v4 as uuidV4 } from 'uuid'
 import { AuthContext } from '~/App'
-import { getDocumentsByUserId } from '~/service/api'
-import { Box } from '@material-ui/core'
+import { deleteDocument, getDocumentsByUserId } from '~/service/api'
+import { Box, Button, CircularProgress } from '@material-ui/core'
+import { useModal } from '~/hooks'
 
 interface DocumentToFront {
   _id: string,
@@ -20,6 +21,9 @@ export const Documents: React.FC = () => {
   const history = useHistory()
   const authAccount = useContext(AuthContext)
   const [documents, setDocuments] = useState<DocumentToFront[] | undefined>()
+  const [documentId, setDocumentId] = useState<string | undefined>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [showDialog, toggleDialog] = useModal()
 
   const handleClick = (documentId?: string) => {
     history.push(`${match.url}/documents/${documentId || uuidV4()}`)
@@ -35,6 +39,21 @@ export const Documents: React.FC = () => {
       })()
     }
   }, [authAccount])
+
+  const handleDelete = async () => {
+    if (documentId) {
+      setLoading(true)
+      await deleteDocument({ documentId })
+      toggleDialog()
+      if (authAccount) {
+        const result = await getDocumentsByUserId({
+          userId: authAccount._id
+        })
+        setDocuments(result.data)
+      }
+      setLoading(false)
+    }
+  }
 
   if (!documents) {
     return (
@@ -54,7 +73,14 @@ export const Documents: React.FC = () => {
         </DocumentCard>
         {documents.map((document, index) => {
           return (
-            <DocumentCard key={index} title={document.title ? document.title : `Documento ${index}`} onClick={() => handleClick(document._id)}>
+            <DocumentCard
+              key={index}
+              title={document.title ? document.title : `Documento ${index}`}
+              onClick={() => handleClick(document._id)}
+              toggleDialog={toggleDialog}
+              setDocumentId={setDocumentId}
+              documentId={document._id}
+            >
               {!document.image.length ? (
                 <NewDoc height='100%' width='100%' />
               ) : (
@@ -71,6 +97,20 @@ export const Documents: React.FC = () => {
           )
         })}
       </Box>
+      <ActionDialog
+        title='Deletar documento?'
+        description='O documento será deletado e removido da listagem.'
+        open={showDialog}
+        onClose={toggleDialog}
+        actions={(
+          <>
+            <Button onClick={toggleDialog} disabled={loading}>Cancelar</Button>
+            <Button onClick={handleDelete} variant='contained' disabled={loading}>
+              {loading ? <CircularProgress  size={25} /> : 'Deletar'}
+            </Button>
+          </>
+        )}
+      />
     </Layout>
   )
 }

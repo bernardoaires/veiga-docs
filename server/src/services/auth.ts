@@ -1,41 +1,17 @@
-import express, { RequestHandler } from 'express'
-import cors from 'cors'
+import express from 'express'
 import bcrypt from 'bcrypt'
-import morgan from 'morgan'
-import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
-import { json } from 'body-parser'
-import { Login, Register, GetDocumentsByUserId } from './types'
+import { Login, Register } from './types'
 import { getDb } from './database'
 import { v4 as uuidV4 } from 'uuid'
 import { validateSchema } from '../utils/validateSchema'
-import { getDocumentsByUserIdSchema, loginSchema, registerSchema } from './schema'
+import { loginSchema, registerSchema } from './schema'
+import { middlewareHandler } from '../utils/middlewareHandler'
 
 const app = express()
 const port = 8000
-dotenv.config()
 
-const validateJWT: RequestHandler = (req, res, next) => {  
-  const token = req.headers.authorization
-  if (!token) {
-    next()
-    return
-  }
-
-  try {
-    jwt.verify(token, process.env.JWT_KEY!)
-    next()
-  } catch (err) {
-    console.log('Error verifying token.')
-    next()
-  }
-}
-
-app.use(cors())
-app.use(express.json())
-app.use(morgan('dev'))
-app.use(json())
-app.use(validateJWT)
+middlewareHandler(app, port, 'Auth')
 
 app.get('/me', async (req, res) => {
   const token = req.headers.authorization
@@ -136,30 +112,4 @@ app.post('/login', async (req, res) => {
     userId: authAccount._id
   }, process.env.JWT_KEY!)
   res.send({ token })
-})
-
-app.post('/documents', async (req, res) => {
-  const { userId } = req.body as GetDocumentsByUserId
-  const db = await getDb()
-
-  const errors = validateSchema(getDocumentsByUserIdSchema, req.body)
-
-  if (errors) {
-    res.status(400).send(errors)
-    return
-  }
-
-  try {
-    const result = await db.collection('Document').find({
-      userId
-    }).sort({ updatedAt: -1 }).toArray()
-  
-    res.send(result)
-  } catch {
-    res.sendStatus(500)
-  }
-})
-
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`)
 })
