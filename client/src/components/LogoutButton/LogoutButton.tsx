@@ -28,5 +28,5 @@ export const LogoutButton: React.FC = () => {
       </Box>
     )
   }
-  return null
+  return <Box sx={{ marginRight: 2 }} />
 }

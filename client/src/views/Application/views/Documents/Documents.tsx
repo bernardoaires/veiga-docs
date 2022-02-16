@@ -7,6 +7,7 @@ import { AuthContext } from '~/App'
 import { deleteDocument, getDocumentsByUserId } from '~/service/api'
 import { Box, Button, CircularProgress } from '@material-ui/core'
 import { useModal } from '~/hooks'
+import { formatTitle } from '~/utils/format'
 
 interface DocumentToFront {
   _id: string,
@@ -75,7 +76,7 @@ export const Documents: React.FC = () => {
           return (
             <DocumentCard
               key={index}
-              title={document.title ? document.title : `Documento ${index}`}
+              title={document.title ? formatTitle(document.title) : `Documento ${index}`}
               onClick={() => handleClick(document._id)}
               toggleDialog={toggleDialog}
               setDocumentId={setDocumentId}

@@ -39,7 +39,7 @@ export const Login: React.FC = () => {
       window.location.reload()
       return
     }
-    enqueueSnackbar('Erro ao logar.', {
+    enqueueSnackbar('Usuário ou senha incorreto.', {
       variant: 'error',
       anchorOrigin: { horizontal: 'center', vertical: 'bottom' }
     })
